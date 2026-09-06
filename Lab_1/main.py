@@ -2,14 +2,28 @@ import datetime as DT
 import numpy as NP
 import pandas as PN
 from matplotlib import pyplot as PLT
-def rec_create(index):
-    name = input("Введите ФИО сотрудника: ")
-    date_str = input("Введите дату рождения (dd/mm/yyyy): ")
-    date_b = DT.datetime.strptime(date_str, '%d/%m/%Y').date()
-    ch_num = int(input("Зарплата: "))
-    data = [{'Индекс': index, 'ФИО': name, 'Дата рождения': date_b, 'Зарплата': ch_num }]
-    df = PN.DataFrame(data)
-    return df
+
+class Worker:
+    def __init__(self):
+        self.__name = input("Введите ФИО сотрудника: ")
+        self.__date_str = input("Введите дату рождения (dd/mm/yyyy): ")
+        self.__ch_num=int(input("Зарплата: "))
+        self.__date_b = DT.datetime.strptime(self.__date_str, '%d/%m/%Y').date()
+        self.data = {'ФИО': self.__name, 'Дата рождения': self.__date_b, 'Зарплата': self.__ch_num }
+
+class WorkerFactory:
+    def __init__(self):
+        self.df = PN.DataFrame(columns=['ФИО', 'Дата рождения','Зарплата'])
+
+    def create(self):
+        w= Worker()
+        self.df.loc[len(self.df)] = w.data
+        self.df.index = PN.RangeIndex(start=1,stop=1+len(self.df), name='Индекс')
+
+    def __str__(self):
+        return self.df.to_string()
+
+
 def plot_salary(salary_array):
     groups = NP.zeros(6)
     for i in salary_array:
@@ -32,9 +46,7 @@ def plot_salary(salary_array):
 
 if __name__ == '__main__':
 
-    index = 0
-    emp_list = PN.DataFrame()
-
+    factory=WorkerFactory()
     name = 'true'
     while True:
         print("Выберите действие из списка:")
@@ -49,15 +61,12 @@ if __name__ == '__main__':
         task_number = input("Введите номер команды: ")
 
         if task_number == '1':
-            index = index+1
-            rec = rec_create(index)
-            emp_list = emp_list._append(rec)
-
+            factory.create()
         if task_number == '4':
-            print(emp_list)
+            print(factory)
 
         if task_number == '6':
-            plot_salary(emp_list['Зарплата'].to_numpy())
+            plot_salary(factory.df['Зарплата'].to_numpy())
 
-        if task_number == '7':
+        if task_number == '8':
             break
