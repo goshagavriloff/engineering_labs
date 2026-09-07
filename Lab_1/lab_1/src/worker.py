@@ -21,7 +21,7 @@ class Worker:
         ch_num=(input("Зарплата: ")) or (0 if old_data is None else old_data.get("Зарплата")  )
         ring_str = (input("Семейное положение (женат/замужем/холост): ").strip().lower()) or (False if old_data is None else str(old_data.get("Женат/замужем"))  )
 
-        date_b = DT.datetime.strptime(date_str, '%d/%m/%Y').date()
+        date_b = DT.datetime.strptime(date_str, '%d/%m/%Y')
         isRinged = ring_str in ['женат', 'замужем', 'true', '1','True']
 
 
